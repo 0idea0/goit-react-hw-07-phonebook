@@ -1,0 +1,7 @@
+label {
+  display: inline-flex;
+  margin: 5px;
+}
+.formBtn {
+  display: block;
+}
