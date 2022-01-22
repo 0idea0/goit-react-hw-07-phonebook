@@ -1,20 +1,41 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import {
-  addContact,
+  addContactError,
+  addContactSuccess,
+  addContactRequest,
+  deleteContactError,
+  deleteContactSuccess,
+  deleteContactRequest,
+  getContactError,
+  getContactSuccess,
+  getContactRequest,
   changeFilter,
-  deleteContact,
 } from './phonebook-actions.js';
 
 const phonebookContacts = createReducer([], {
-  [addContact]: (state, { payload }) => [...state, payload],
-  [deleteContact]: (state, { payload }) =>
+  [addContactSuccess]: (state, { payload }) => [...state, payload],
+  [deleteContactSuccess]: (state, { payload }) =>
     state.filter(contact => contact.id !== payload),
+  [getContactSuccess]: (_, { payload }) => payload,
 });
+
 const phonebookFilter = createReducer('', {
   [changeFilter]: (_, { payload }) => payload,
+});
+const loading = createReducer(false, {
+  [addContactRequest]: () => true,
+  [addContactError]: () => false,
+  [addContactSuccess]: () => false,
+  [deleteContactRequest]: () => true,
+  [deleteContactError]: () => false,
+  [deleteContactSuccess]: () => false,
+  [getContactRequest]: () => true,
+  [getContactError]: () => false,
+  [getContactSuccess]: () => false,
 });
 export default combineReducers({
   phonebookContacts,
   phonebookFilter,
+  loading,
 });
