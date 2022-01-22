@@ -1,15 +1,25 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { deleteContact } from '../../redux/phonebook/phonebook-actions.js';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import s from './ContactList.module.css';
 
-const ContactList = ({ contacts, deleteContact }) => {
+const ContactList = ({ contacts, deleteContact, filter, onContactFetch }) => {
+  const getVisibleContacts = (contacts, filter) => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(normalizedFilter),
+    );
+  };
+  const contactArr = getVisibleContacts(contacts, filter);
+
+  useEffect(() => {
+    onContactFetch();
+  }, [onContactFetch]);
+
   return (
     <>
       <ul className={s.ContactList}>
-        {contacts &&
-          contacts.map(({ id, name, number }) => (
+        {contactArr &&
+          contactArr.map(({ id, name, number }) => (
             <li key={id}>
               {name} {number}
               &ensp;
@@ -27,20 +37,4 @@ const ContactList = ({ contacts, deleteContact }) => {
   );
 };
 
-const getVisibleContacts = (allContacts, filter) => {
-  const normalizedFilter = filter.toLowerCase();
-  return allContacts.filter(contact =>
-    contact.name.toLowerCase().includes(normalizedFilter),
-  );
-};
-const mapStateToProps = ({
-  contacts: { phonebookContacts, phonebookFilter },
-}) => ({
-  contacts: getVisibleContacts(phonebookContacts, phonebookFilter),
-});
-
-const mapDispatchToProps = dispatch => ({
-  deleteContact: id => dispatch(deleteContact(id)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+export default ContactList;
