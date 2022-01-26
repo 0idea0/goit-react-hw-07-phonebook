@@ -1,0 +1,19 @@
+{
+    "contacts": [
+  {
+        "name": "Katie Stark",
+    "phone": "783-967-6168",
+    "id": "1"
+  },
+  {
+        "name": "Florence Windler",
+    "phone": "910-210-1387",
+    "id": "2"
+  },
+  {
+        "name": "Willard Rice",
+    "phone": "707-812-2665",
+    "id": "3"
+  } 
+]
+}

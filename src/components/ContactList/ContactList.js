@@ -1,40 +1,29 @@
-import React, { useEffect } from 'react';
-import Button from '@mui/material/Button';
-import s from './ContactList.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { ContactElem } from '../ContactElem/ContactElem';
+import { contactDelete } from '../../redux/contacts/contact-operations';
+import { getVisibleContacts } from '../../redux/selector';
+import s from '../ContactElem/ContactElem.module.css';
 
-const ContactList = ({ contacts, deleteContact, filter, onContactFetch }) => {
-  const getVisibleContacts = (contacts, filter) => {
-    const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedFilter),
-    );
-  };
-  const contactArr = getVisibleContacts(contacts, filter);
-
-  useEffect(() => {
-    onContactFetch();
-  }, [onContactFetch]);
+export const ContactList = () => {
+  const dispatch = useDispatch();
+  const visibleContacts = useSelector(getVisibleContacts);
+  const onContactDelete = id => dispatch(contactDelete(id));
 
   return (
     <>
-      <ul className={s.ContactList}>
-        {contactArr &&
-          contactArr.map(({ id, name, number }) => (
-            <li key={id}>
-              {name} {number}
-              &ensp;
-              <Button
-                variant="outlined"
-                type="button"
-                onClick={() => deleteContact(id)}
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
+      <ul>
+        {visibleContacts.map(({ id, name, number }) => (
+          <li className={s.contactItem} key={id}>
+            <ContactElem
+              name={name}
+              number={number}
+              onContactDelete={() => {
+                onContactDelete(id);
+              }}
+            />
+          </li>
+        ))}
       </ul>
     </>
   );
 };
-
-export default ContactList;
