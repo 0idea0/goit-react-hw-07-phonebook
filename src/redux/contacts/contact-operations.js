@@ -1,46 +1,34 @@
-import axios from 'axios';
-import {
-  addContactRequest,
-  addContactSuccess,
-  addContactError,
-  fetchContactRequest,
-  fetchContactSuccess,
-  fetchContactError,
-  contactDeleteRequest,
-  contactDeleteSuccess,
-  contactDeleteError,
-} from './contact-actions';
+import { fetchContacts, addContacts, deleteContact } from '../../services/api';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-axios.defaults.baseURL = 'https://61f11005072f86001749efde.mockapi.io/api/v1';
+export const addContact = createAsyncThunk(
+  'contacts/addContact',
+  async ({ name, number }, { rejectWithValue }) => {
+    const contact = {
+      name,
+      number,
+    };
+    try {
+      const contacts = await addContacts(contact);
+      return contacts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
-export const fetchContacts = () => dispatch => {
-  dispatch(fetchContactRequest());
+export const fetchContactsList = createAsyncThunk(
+  'contacts/fetchContacts',
+  async () => {
+    const contacts = await fetchContacts();
+    return contacts;
+  },
+);
 
-  return axios
-    .get('/contacts')
-    .then(({ data }) => dispatch(fetchContactSuccess(data)))
-    .catch(error => dispatch(fetchContactError(error)));
-};
-
-export const addContact = (name, number) => dispatch => {
-  const contact = {
-    name,
-    number,
-  };
-
-  dispatch(addContactRequest());
-
-  return axios
-    .post('/contacts', contact)
-    .then(({ data }) => dispatch(addContactSuccess(data)))
-    .catch(error => dispatch(addContactError(error)));
-};
-
-export const contactDelete = comtactId => dispatch => {
-  dispatch(contactDeleteRequest());
-
-  return axios
-    .delete(`/contacts/${comtactId}`)
-    .then(() => dispatch(contactDeleteSuccess(comtactId)))
-    .catch(error => dispatch(contactDeleteError(error)));
-};
+export const deleteContactsOps = createAsyncThunk(
+  'contacts/deleteContact',
+  async id => {
+    const contacts = await deleteContact(id);
+    return contacts;
+  },
+);
